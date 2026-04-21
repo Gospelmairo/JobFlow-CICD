@@ -1,0 +1,13 @@
+.env
+api/.env
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+.coverage
+htmlcov/
+coverage.xml
+node_modules/
+*.egg-info/
+dist/
+images.tar.gz
