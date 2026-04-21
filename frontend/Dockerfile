@@ -1,12 +1,12 @@
 # syntax=docker/dockerfile:1
-FROM node:20-slim AS builder
+FROM node:20-alpine AS builder
 WORKDIR /app
 COPY package*.json ./
 RUN npm install --omit=dev
 
-FROM node:20-slim
+FROM node:20-alpine
 WORKDIR /app
-RUN groupadd --system appgroup && useradd --system --gid appgroup appuser
+RUN addgroup -S appgroup && adduser -S -G appgroup -H appuser
 COPY --from=builder /app/node_modules ./node_modules
 COPY app.js healthcheck.js package.json ./
 COPY views ./views

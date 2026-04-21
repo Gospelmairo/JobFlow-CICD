@@ -1,16 +1,15 @@
 # syntax=docker/dockerfile:1
-FROM python:3.11-slim AS builder
-WORKDIR /app
+FROM python:3.11-alpine AS builder
+WORKDIR /build
 COPY requirements.txt .
-RUN pip install --user --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir --prefix=/install -r requirements.txt
 
-FROM python:3.11-slim
+FROM python:3.11-alpine
 WORKDIR /app
-RUN groupadd --system appgroup && useradd --system --gid appgroup appuser
-COPY --from=builder /root/.local /home/appuser/.local
+RUN addgroup -S appgroup && adduser -S -G appgroup -H appuser
+COPY --from=builder /install /usr/local
 COPY main.py healthcheck.py ./
 USER appuser
-ENV PATH=/home/appuser/.local/bin:$PATH
 EXPOSE 8000
 HEALTHCHECK --interval=30s --timeout=10s --start-period=10s --retries=3 \
   CMD ["python", "healthcheck.py"]
