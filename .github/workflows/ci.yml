@@ -145,34 +145,58 @@ jobs:
       - name: Load images
         run: gunzip -c images.tar.gz | docker load
 
-      - name: Scan API image with Trivy
+      - name: Generate SARIF for API
         uses: aquasecurity/trivy-action@master
         with:
           image-ref: localhost:5000/api:latest
           format: sarif
           output: trivy-api.sarif
-          severity: CRITICAL
-          exit-code: "1"
-          ignore-unfixed: true
+          exit-code: "0"
           scanners: vuln
 
-      - name: Scan worker image with Trivy
+      - name: Generate SARIF for worker
         uses: aquasecurity/trivy-action@master
         with:
           image-ref: localhost:5000/worker:latest
           format: sarif
           output: trivy-worker.sarif
-          severity: CRITICAL
-          exit-code: "1"
-          ignore-unfixed: true
+          exit-code: "0"
           scanners: vuln
 
-      - name: Scan frontend image with Trivy
+      - name: Generate SARIF for frontend
         uses: aquasecurity/trivy-action@master
         with:
           image-ref: localhost:5000/frontend:latest
           format: sarif
           output: trivy-frontend.sarif
+          exit-code: "0"
+          scanners: vuln
+
+      - name: Fail on CRITICAL fixable CVEs
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: localhost:5000/api:latest
+          format: table
+          severity: CRITICAL
+          exit-code: "1"
+          ignore-unfixed: true
+          scanners: vuln
+
+      - name: Fail on CRITICAL fixable CVEs (worker)
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: localhost:5000/worker:latest
+          format: table
+          severity: CRITICAL
+          exit-code: "1"
+          ignore-unfixed: true
+          scanners: vuln
+
+      - name: Fail on CRITICAL fixable CVEs (frontend)
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: localhost:5000/frontend:latest
+          format: table
           severity: CRITICAL
           exit-code: "1"
           ignore-unfixed: true
