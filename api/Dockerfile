@@ -1,12 +1,16 @@
 # syntax=docker/dockerfile:1
 FROM python:3.11-alpine AS builder
 WORKDIR /build
+RUN apk update && apk upgrade --no-cache
+RUN pip install --no-cache-dir --upgrade pip setuptools wheel
 COPY requirements.txt .
 RUN pip install --no-cache-dir --prefix=/install -r requirements.txt
 
-FROM python:3.11-alpine
+FROM python:3.11-alpine AS runtime
 WORKDIR /app
-RUN addgroup -S appgroup && adduser -S -G appgroup -H appuser
+RUN apk update && apk upgrade --no-cache && \
+    addgroup -S appgroup && adduser -S -G appgroup -H appuser
+RUN pip install --no-cache-dir --upgrade pip setuptools wheel
 COPY --from=builder /install /usr/local
 COPY main.py healthcheck.py ./
 USER appuser

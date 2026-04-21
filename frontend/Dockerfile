@@ -1,12 +1,14 @@
 # syntax=docker/dockerfile:1
 FROM node:20-alpine AS builder
 WORKDIR /app
+RUN apk update && apk upgrade --no-cache
 COPY package*.json ./
 RUN npm install --omit=dev
 
-FROM node:20-alpine
+FROM node:20-alpine AS runtime
 WORKDIR /app
-RUN addgroup -S appgroup && adduser -S -G appgroup -H appuser
+RUN apk update && apk upgrade --no-cache && \
+    addgroup -S appgroup && adduser -S -G appgroup -H appuser
 COPY --from=builder /app/node_modules ./node_modules
 COPY app.js healthcheck.js package.json ./
 COPY views ./views
