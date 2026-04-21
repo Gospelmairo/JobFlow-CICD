@@ -266,6 +266,7 @@ jobs:
             cd ~/hng14-stage2-devops
             git pull origin main
             echo "REDIS_PASSWORD=$REDIS_PASSWORD" > .env
+            docker compose down --remove-orphans 2>/dev/null || true
             docker compose up -d redis
             sleep 5
             for service in api worker frontend; do
