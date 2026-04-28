@@ -94,6 +94,8 @@ Successful startup output:
 
 ## CI/CD Pipeline
 
+![Pipeline Success](screenshots/pipeline-success.png)
+
 Every push and pull request runs through a six-stage GitHub Actions pipeline:
 
 ```
