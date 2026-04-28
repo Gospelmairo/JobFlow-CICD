@@ -8,6 +8,8 @@ A containerized microservices job-processing system with a full CI/CD pipeline  
 
 JobFlow-CICD is a distributed job queue platform where users submit jobs via a web dashboard, an API queues them into Redis, and background workers process them asynchronously. Every code change is automatically linted, tested, security-scanned, and deployed through a multi-stage GitHub Actions pipeline.
 
+![Job Processor Dashboard](screenshots/dashboard.png)
+
 ---
 
 ## Architecture
